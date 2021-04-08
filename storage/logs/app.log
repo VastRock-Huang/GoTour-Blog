@@ -1,0 +1,6 @@
+2021/04/05 20:43:00 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617626580487650400}
+2021/04/07 23:40:05 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617810005753341200}
+2021/04/08 10:04:05 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617847445681630100}
+2021/04/08 10:29:39 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617848979051940800}
+2021/04/08 10:46:10 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617849970539899500}
+2021/04/08 10:47:34 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617850054494934200}

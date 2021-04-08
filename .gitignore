@@ -1,4 +1,5 @@
 .vscode
+app.log	# project log
 
 # Binaries for programs and plugins
 *.exe
