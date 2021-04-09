@@ -1,7 +1,7 @@
 .vscode
 *app.log	
-\storage\uploads*	# image uploaded
-\storage\logs*	# project log
+/storage/uploads/	# image uploaded
+/storage/logs/	# project log
 # Binaries for programs and plugins
 *.exe
 *.exe~
