@@ -5,8 +5,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	_ "github.com/vastrock-huang/gotour-blogservice/docs"
+	"github.com/vastrock-huang/gotour-blogservice/global"
 	"github.com/vastrock-huang/gotour-blogservice/internal/middleware"
+	"github.com/vastrock-huang/gotour-blogservice/internal/routers/api"
 	"github.com/vastrock-huang/gotour-blogservice/internal/routers/api/v1"
+	"net/http"
 )
 
 //新建路由
@@ -20,6 +23,9 @@ func NewRouter() *gin.Engine {
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()
+	upload := api.NewUpload()
+	r.POST("/upload/file",upload.UploadFile)
+	r.StaticFS("/static",http.Dir(global.AppSetting.UploadSavePath))
 	apiV1 := r.Group("/api/v1")
 	{
 		apiV1.POST("/tags", tag.Create)       //新增标签

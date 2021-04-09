@@ -36,3 +36,4 @@
 2021/04/09 20:08:04 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"error","message":"svc.UpdateTag err: sql: expected 5 arguments, got 6","time":1617970084631052200}
 2021/04/09 20:08:42 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617970122230849200}
 2021/04/09 20:10:14 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617970214683852100}
+2021/04/09 22:49:10 {"callers":["E:/Computer/Go/gotour-blog/main.go: 26: main.init.0"],"level":"info","message":"hhh: gotour-blog/blog_service","time":1617979750506641000}
