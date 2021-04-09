@@ -6,7 +6,7 @@ import (
 	"github.com/vastrock-huang/gotour-blogservice/pkg/convert"
 )
 
-
+//获取页码
 func GetPage(c *gin.Context) int {
 	page:=convert.StrTo(c.Query("page")).MustInt()
 	if page <= 0 {
@@ -15,6 +15,7 @@ func GetPage(c *gin.Context) int {
 	return page
 }
 
+//获取每页记录数量
 func GetPageSize(c *gin.Context) int {
 	pageSize:=convert.StrTo(c.Query("page_size")).MustInt()
 	if pageSize <= 0 {
@@ -26,6 +27,7 @@ func GetPageSize(c *gin.Context) int {
 	return pageSize
 }
 
+//获取页偏移(即第page页第一条记录的序号)
 func GetPageOffset(page, pageSize int) int {
 	result := 0
 	if page > 0 {
