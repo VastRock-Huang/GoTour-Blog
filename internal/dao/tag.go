@@ -5,6 +5,17 @@ import (
 	"github.com/vastrock-huang/gotour-blogservice/pkg/app"
 )
 
+//给定id和状态获取标签
+func (d *Dao) GetTag(id uint32, state uint8) (model.Tag, error) {
+	tag:=model.Tag{
+		State: state,
+		Model: &model.Model{
+			ID: id,
+		},
+	}
+	return tag.Get(d.engine)
+}
+
 //给定标签名和其状态统计标签数
 func (d *Dao) CountTag(name string, state uint8) (int, error) {
 	tag:=model.Tag{

@@ -12,4 +12,8 @@ var (
 	DatabaseSetting *setting.DatabaseSettingS
 	//全局日志
 	Logger          *logger.Logger
+	//JWT认证
+	JWTSetting *setting.JWTSettingS
+	//邮件配置
+	EmailSetting *setting.EmailSettingS
 )

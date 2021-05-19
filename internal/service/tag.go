@@ -51,14 +51,17 @@ func (svc *Service) GetTagList(param *TagListRequest,pager *app.Pager) ([]*model
 	return svc.dao.GetTagList(param.Name,param.State,pager.Page,pager.PageSize)
 }
 
+//创建标签
 func (svc *Service) CreateTag(param *CreateTagRequest) error {
 	return svc.dao.CreateTag(param.Name,param.State,param.CreatedBy)
 }
 
+//更新标签
 func (svc *Service) UpdateTag(param *UpdateTagRequest) error {
 	return svc.dao.UpdateTag(param.ID,param.Name,param.State,param.ModifiedBy)
 }
 
+//删除标签
 func (svc *Service) DeleteTag(param *DeleteTagRequest) error {
 	return svc.dao.DeleteTag(param.ID)
 }

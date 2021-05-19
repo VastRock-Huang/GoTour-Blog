@@ -4,6 +4,7 @@ package service
 
 import (
 	"context"
+	otgorm "github.com/eddycjy/opentracing-gorm"
 	"github.com/vastrock-huang/gotour-blogservice/global"
 	"github.com/vastrock-huang/gotour-blogservice/internal/dao"
 )
@@ -19,6 +20,7 @@ func New(ctx context.Context) Service {
 	svc := Service{
 		ctx: ctx,
 	}
-	svc.dao=dao.New(global.DBEngine)
+	// otgorm.WithContext 将请求上下文与数据库引擎关联起来
+	svc.dao=dao.New(otgorm.WithContext(svc.ctx,global.DBEngine))
 	return svc
 }

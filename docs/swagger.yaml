@@ -10,15 +10,67 @@ definitions:
     type: object
   errcode.Error:
     type: object
-  model.Tag:
+  model.Article:
     properties:
-      create_by:
+      content:
+        description: 文章内容
+        type: string
+      cover_image_url:
+        description: 文章封面url
+        type: string
+      created_by:
         description: 创建人
         type: string
-      create_on:
+      created_on:
         description: 创建时间
         type: integer
-      delete_on:
+      deleted_on:
+        description: 删除时间
+        type: integer
+      desc:
+        description: 文章简述
+        type: string
+      id:
+        type: integer
+      is_del:
+        description: 是否删除
+        type: integer
+      modified_by:
+        description: 修改人
+        type: string
+      modified_on:
+        description: 修改时间
+        type: integer
+      state:
+        description: 文章状态
+        type: integer
+      title:
+        description: 文章标题
+        type: string
+    type: object
+  model.ArticleSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Article'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
+  model.AuthSwagger:
+    properties:
+      token:
+        type: string
+    type: object
+  model.Tag:
+    properties:
+      created_by:
+        description: 创建人
+        type: string
+      created_on:
+        description: 创建时间
+        type: integer
+      deleted_on:
         description: 删除时间
         type: integer
       id:
@@ -55,12 +107,177 @@ info:
   title: 博客系统
   version: "1.0"
 paths:
+  /api/v1/articles:
+    get:
+      parameters:
+      - description: 文章名称
+        in: query
+        maxLength: 100
+        minLength: 2
+        name: name
+        type: string
+      - description: 标签ID
+        in: query
+        name: tag_id
+        type: integer
+      - default: 1
+        description: 状态
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 获取多个文章
+  /api/v1/articles/{id}:
+    delete:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 删除文章
+    get:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 获取单个文章
+    put:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 标签ID
+        in: body
+        name: tag_id
+        schema:
+          type: string
+      - description: 文字标题
+        in: body
+        maxLength: 100
+        minLength: 2
+        name: title
+        schema:
+          type: string
+      - description: 文章简述
+        in: body
+        maxLength: 255
+        minLength: 2
+        name: desc
+        schema:
+          type: string
+      - description: 封面图片地址
+        in: body
+        maxLength: 255
+        name: cover_image_url
+        schema:
+          type: string
+      - description: 文章内容
+        in: body
+        maxLength: 4294967295
+        minLength: 2
+        name: content
+        schema:
+          type: string
+      - default: 1
+        description: 状态
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: 修改者
+        in: body
+        maxLength: 100
+        minLength: 2
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 更新文章
   /api/v1/tags:
     get:
       parameters:
       - description: 标签名称
         in: query
         maxLength: 100
+        minLength: 3
         name: name
         type: string
       - default: 1
@@ -93,7 +310,7 @@ paths:
         "500":
           description: 内部错误
           schema:
-            type: obgject
+            $ref: '#/definitions/errcode.Error'
       summary: 获取多个标签
     post:
       parameters:
@@ -211,4 +428,35 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: 更新标签
+  /auth:
+    get:
+      parameters:
+      - description: app_key
+        in: query
+        maxLength: 20
+        name: app_key
+        required: true
+        type: string
+      - description: app_secret
+        in: query
+        maxLength: 50
+        name: app_secret
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.AuthSwagger'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 校验获取认证信息
 swagger: "2.0"

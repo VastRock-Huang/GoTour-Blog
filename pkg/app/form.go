@@ -36,9 +36,7 @@ func (v *ValidErrors) Error() string {
 func BindAndValid(c *gin.Context,v interface{}) (bool,ValidErrors) {
 	var errs ValidErrors
 	//将上下文中字段数据绑定到接口v中
-	err := c.ShouldBind(v)
-	//绑定数据出错
-	if err != nil {
+	if err := c.ShouldBind(v); err != nil {		//绑定数据出错
 		//获取validator的翻译器
 		v := c.Value("trans")
 		trans,_ := v.(ut.Translator)

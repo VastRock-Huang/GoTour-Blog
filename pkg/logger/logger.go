@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"runtime"
@@ -129,6 +130,25 @@ func (l *Logger) WithCallerFrames() *Logger {
 	return ll
 }
 
+//返回带链路追踪信息的新日志结构体
+func (l *Logger) WithTrace() *Logger {
+	if ginCtx,ok:=l.ctx.(*gin.Context); ok {
+		//返回带链路ID和SpanID字段的日志结构体
+		return l.WithFields(Fields{
+			"trace_id":ginCtx.MustGet("X-Trace-ID"),
+			"span_id":ginCtx.MustGet("X-Span-ID"),
+		})
+	}
+	return l
+}
+
+//添加日志共同套件
+//为个人修改, 主要为了减少输出函数中代码重复
+func (l *Logger) WithCommonUtils(ctx context.Context) *Logger {
+	return l.WithContext(ctx).WithTrace().WithCaller(3)
+}
+
+
 //日志JSON格式化
 func (l *Logger) JSONFormat(level Level, message string) map[string]interface{} {
 	data := make(Fields, len(l.fields)+4)
@@ -168,51 +188,51 @@ func (l Logger) Output(level Level, message string) {
 }
 
 //不同等级的日志输出
-
-func (l *Logger) Debug(v ...interface{}) {
-	l.Output(LevelDebug, fmt.Sprint(v...))
+//日志中带上下文信息以及链路跟踪信息,并进行输出
+func (l *Logger) Debug(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelDebug, fmt.Sprint(v...))
 }
 
-func (l *Logger) Debugf(format string, v ...interface{}) {
-	l.Output(LevelDebug, fmt.Sprintf(format, v...))
+func (l *Logger) Debugf(ctx context.Context, format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelDebug, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Info(v ...interface{}) {
-	l.Output(LevelInfo, fmt.Sprint(v...))
+func (l *Logger) Info(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelInfo,fmt.Sprint(v...))
 }
 
-func (l *Logger) Infof(format string, v ...interface{}) {
-	l.Output(LevelInfo, fmt.Sprintf(format, v...))
+func (l *Logger) Infof(ctx context.Context,format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelInfo, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Warn(v ...interface{}) {
-	l.Output(LevelWarn, fmt.Sprint(v...))
+func (l *Logger) Warn(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelWarn, fmt.Sprint(v...))
 }
 
-func (l *Logger) Warnf(format string, v ...interface{}) {
-	l.Output(LevelWarn, fmt.Sprintf(format, v...))
+func (l *Logger) Warnf(ctx context.Context, format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelWarn, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Error(v ...interface{}) {
-	l.Output(LevelError, fmt.Sprint(v...))
+func (l *Logger) Error(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelError, fmt.Sprint(v...))
 }
 
-func (l *Logger) Errorf(format string, v ...interface{}) {
-	l.Output(LevelError, fmt.Sprintf(format, v...))
+func (l *Logger) Errorf(ctx context.Context, format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelError, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Fatal(v ...interface{}) {
-	l.Output(LevelFatal, fmt.Sprint(v...))
+func (l *Logger) Fatal(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelFatal, fmt.Sprint(v...))
 }
 
-func (l *Logger) Fatalf(format string, v ...interface{}) {
-	l.Output(LevelFatal, fmt.Sprintf(format, v...))
+func (l *Logger) Fatalf(ctx context.Context, format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelFatal, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Panic(v ...interface{}) {
-	l.Output(LevelPanic, fmt.Sprint(v...))
+func (l *Logger) Panic(ctx context.Context, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelPanic, fmt.Sprint(v...))
 }
 
-func (l *Logger) Panicf(format string, v ...interface{}) {
-	l.Output(LevelPanic, fmt.Sprintf(format, v...))
+func (l *Logger) Panicf(ctx context.Context, format string, v ...interface{}) {
+	l.WithCommonUtils(ctx).Output(LevelPanic, fmt.Sprintf(format, v...))
 }

@@ -13,6 +13,7 @@ type Tag struct {
 	State uint8 `json:"state"`	//标签状态
 }
 
+//Swagger文档标签信息
 type TagSwagger struct {
 	List []*Tag
 	Pager *app.Pager
@@ -22,6 +23,20 @@ type TagSwagger struct {
 func (t Tag) TableName() string {
 	return "blog_tag"
 }
+
+//获取标签
+func (t Tag) Get(db *gorm.DB) (Tag, error) {
+	var tag Tag
+	// SELECT * FROM tag
+	// WHERE id=t.ID AND is_del=0 AND state=t.State
+	// ORDER BY id LIMIT 1;
+	if err:=db.Where("id=? AND is_del=? AND state=?",
+		t.ID,0,t.State).First(&tag).Error; err != nil {
+		return tag,err
+	}
+	return tag,nil
+}
+
 
 //统计标签数
 func (t Tag) Count(db *gorm.DB) (int, error) {
@@ -39,22 +54,21 @@ func (t Tag) Count(db *gorm.DB) (int, error) {
 	return count,nil
 }
 
-//列出所有标签
+//列出所有标签(跳过前pageOffset个,取pageSize个)
 func (t Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 	var tags []*Tag
 	var err error
 	if pageOffset >= 0 && pageSize > 0 {
 		//跳过pageOffset个记录,限制最多获取pageSize个记录
-		//SELECT * FROM tag OFFSET=pageOffset LIMIT pageSize;
 		db = db.Offset(pageOffset).Limit(pageSize)
 	}
 	if t.Name != "" {
 		db=db.Where("name=?",t.Name)
 	}
-	db=db.Where("state=?",t.State)
-	//SELECT * FROM tag WHERE is_del=0 AND name=t.State AND name=t.Name;
+	// SELECT * FROM tag WHERE is_del=0 AND state=t.State AND name=t.Name
+	//LIMIT pageSize OFFSET pageOffset;
 	//结果存入tags中
-	err = db.Where("is_del=?",0).Find(&tags).Error
+	err = db.Where("state=? AND is_del=?",t.State, 0).Find(&tags).Error
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +77,7 @@ func (t Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 
 //创建一个标签
 func (t Tag) Create(db *gorm.DB) error {
-	//INSERT INTO tag VALUES(...)
+	//INSERT INTO tag VALUES(...);
 	//将t作为一条记录插入数据库
 	return db.Create(&t).Error
 }
@@ -83,9 +97,9 @@ func (t Tag) Update(db *gorm.DB, values interface{}) error {
 
 //删除标签
 func (t Tag) Delete(db *gorm.DB) error {
-	//DELETE FROM tag WHERE id=t.ID AND is_del=0
+	//DELETE FROM tag WHERE id=t.ID AND is_del=0;
 	return db.Where("id=? AND is_del=?",t.ID,0).Delete(&Tag{}).Error
-	//PS:对于上述gorm语句和以下操作代码的
+	//PS:对于上述gorm语句和以下操作代码等价
 	//因为Delete()函数参数若为具体的对象,则会增加其主键作为条件进行删除
 	//db.Where("id=? AND is_del=?",t.ID,0).Delete(&t).Error		//原代码
 	//db.Where("is_del=?",0).Delete(&t).Error

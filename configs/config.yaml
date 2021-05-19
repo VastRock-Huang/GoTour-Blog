@@ -1,8 +1,8 @@
 Server: # 服务器配置
   RunMode: debug    # gin运行模式
   HttpPort: 6060    # 默认HTTP监听端口
-  ReadTimeout: 60   # 读取最大持续时间
-  WriteTimeout: 60  # 写入最大持续时间
+  ReadTimeout: 60s   # 读取最大持续时间
+  WriteTimeout: 60s  # 写入最大持续时间
 App: # 应用配置
   DefaultPageSize: 10       # 默认每页数量
   MaxPageSize: 100          # 最大每页数量
@@ -16,6 +16,7 @@ App: # 应用配置
     - .jpg
     - .jpeg
     - .png
+  DefaultContextTimeout: 60s # 默认上下文超时时间
 Database: # 数据库配置
   DBType: mysql
   Username: root
@@ -27,3 +28,16 @@ Database: # 数据库配置
   ParseTime: True   # 自动解析数据库的时间类型到Go时间类型
   MaxIdleConns: 10  # 连接池中最大空闲连接数
   MaxOpenConns: 30  # 最大连接数
+JWT:  # JSON Web 令牌, 用于认证
+  Secret: vastrock-huang  # 密钥
+  Issuser: blog-service   # 签发者
+  Expire: 7200s      # 令牌有效时间
+Email:  # 异常通知的邮件
+  Host: smtp.qq.com # SMTP服务器域名
+  Port: 465 # SMTP服务器端口
+  Username: xxxxx@qq.com # 账号
+  Password: xxxxx # 密码
+  IsSSL: true # 是否支持SSL
+  From: xxxxx@qq.com # 发送者邮箱
+  To:
+    - xxxxx@qq.com

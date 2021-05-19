@@ -2,11 +2,17 @@ package model
 
 import (
 	"fmt"
+	otgorm "github.com/eddycjy/opentracing-gorm"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/vastrock-huang/gotour-blogservice/global"
 	"github.com/vastrock-huang/gotour-blogservice/pkg/setting"
 	"time"
+)
+
+const (
+	StateOpen   = 1
+	StateClose = 0
 )
 
 //数据表公共部分模型
@@ -52,6 +58,8 @@ func NewDBEngine(dbSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	//设置数据库最大空闲连接数和最大连接数
 	db.DB().SetMaxIdleConns(dbSetting.MaxIdleConns)
 	db.DB().SetMaxOpenConns(dbSetting.MaxOpenConns)
+	//添加数据库回调
+	otgorm.AddGormCallbacks(db)
 	return db, nil
 }
 
